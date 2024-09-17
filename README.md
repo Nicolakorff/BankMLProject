@@ -1,3 +1,2 @@
 # Projecte-Machine-Learning
-This is a comment
-Today may rain
+My Personal repository :)
