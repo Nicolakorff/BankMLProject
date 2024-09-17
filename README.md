@@ -1,3 +1,3 @@
 # Projecte-Machine-Learning
-# This is a comment
-# Today may rain
+This is a comment
+Today may rain
