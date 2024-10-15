@@ -1,2 +1,2 @@
 # Projecte-Machine-Learning
-My Personal repository :)
+ML exercices at IT ACADEMY
