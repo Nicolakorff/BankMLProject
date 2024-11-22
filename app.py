@@ -25,6 +25,9 @@ user_data = pd.DataFrame({
     'age': [age]
 })
 
+# Estandarizar las entradas
+user_data_standardized = scaler.transform(user_data)
+
 # Predicción del clúster con K-means
 cluster_prediction = kmodel.predict(user_data)[0]
 
