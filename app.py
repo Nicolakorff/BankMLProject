@@ -31,12 +31,12 @@ user_data = pd.DataFrame({
 
 try:
     # Estandarizar las entradas (excepto 'month')
-    user_data_to_scale = user_data.drop(columns=['month_encoded'])  # Excluir 'month' de la estandarización
+    user_data_to_scale = user_data.drop(columns=['month'])  # Excluir 'month' de la estandarización
     user_data_standardized = scaler.transform(user_data_to_scale)
 
     # Combinar 'month' con los datos estandarizados
     user_data_combined = pd.DataFrame(user_data_standardized, columns=user_data_to_scale.columns)
-    user_data_combined['month_encoded'] = user_data['month_encoded'].values  # Añadir de nuevo la columna 'month'
+    user_data_combined['month'] = user_data['month'].values  # Añadir de nuevo la columna 'month'
 
     # Filtrar las características utilizadas por KMeans
     user_data_kmeans = user_data_combined[['age', 'balance']]  # Cambia según las columnas utilizadas en KMeans
