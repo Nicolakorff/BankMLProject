@@ -4,10 +4,10 @@ import pandas as pd
 
 # Cargar el modelo y el escalador desde archivos
 with open('kmeans_model.pkl', 'rb') as model_file:
-    model = pickle.load(model_file)
+    kmodel = pickle.load(model_file)
 
 with open('logistic_model.pkl', 'rb') as model_file:
-    model = pickle.load(model_file)
+    lmodel = pickle.load(model_file)
 
 with open('scaler.pkl', 'rb') as scaler_file:
     scaler = pickle.load(scaler_file)
@@ -26,10 +26,10 @@ user_data = pd.DataFrame({
 })
 
 # Predicción del clúster con K-means
-cluster_prediction = kmeans_model.predict(user_data)[0]
+cluster_prediction = kmodel.predict(user_data)[0]
 
 # Predicción de la probabilidad con el modelo de regresión logística
-probability_prediction = logistic_model.predict_proba(user_data)[0][1]
+probability_prediction = lmodel.predict_proba(user_data)[0][1]
 
 # Mostrar las predicciones
 st.write(f"El usuario pertenece al clúster: **{cluster_prediction}**")
