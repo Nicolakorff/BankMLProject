@@ -16,13 +16,13 @@ with open('scaler.pkl', 'rb') as scaler_file:
 st.title('Predicción del grupo y probabilidad de adquirir depósitos')
 
 # Entrada de datos del usuario
-balance = st.number_input('Sueldo (euros)', min_value=0)
 age = st.number_input('Edad (años)', min_value=0)
+balance = st.number_input('Sueldo (euros)', min_value=0)
 
 # Crear un DataFrame con las entradas
 user_data = pd.DataFrame({
-    'balance ': [balance],
     'age': [age]
+    'balance ': [balance],
 })
 
 # Estandarizar las entradas
