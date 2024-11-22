@@ -22,18 +22,18 @@ balance = st.number_input('Sueldo (euros)', min_value=0)
 
 # Crear un DataFrame con las entradas
 user_data = pd.DataFrame({
-    'Momento del contacto de campaña': [month_encoded],
+    'Mes': [month_encoded],
     'Edad': [age],
     'Sueldo ': [balance],
 })
 
 # Estandarizar las entradas (excepto 'month')
-user_data_to_scale = user_data.drop(columns=['month'])
+user_data_to_scale = user_data.drop(columns=['mes'])
 user_data_standardized = scaler.transform(user_data_to_scale)
 
 # Combinar 'month' con los datos estandarizados
 user_data_combined = pd.DataFrame(user_data_standardized, columns=user_data_to_scale.columns)
-user_data_combined['month'] = user_data['month'].values 
+user_data_combined['mes'] = user_data['mes'].values 
 
 # Predicción del clúster con K-means
 cluster_prediction = kmeans_model.predict(user_data_combined)[0]
