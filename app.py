@@ -23,7 +23,7 @@ balance = st.number_input('Sueldo (euros)', min_value=0)
 # Crear un DataFrame con las entradas
 user_data = pd.DataFrame({
     'Momento del contacto de campaña': [month_encoded],
-    'Edad': [age]
+    'Edad': [age],
     'Sueldo ': [balance],
 })
 
