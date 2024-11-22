@@ -16,7 +16,7 @@ with open('scaler.pkl', 'rb') as scaler_file:
 st.title('Predicción del grupo y probabilidad de adquirir depósitos')
 
 # Entrada de datos del usuario
-month_encoded = st.selectbox('Momento del contacto de campaña (mes)', min_value=0, max_value=12)
+month_encoded = st.selectbox('Momento del contacto de campaña (mes)', options=list(range(1, 13)))  # Opciones de 1 a 12
 age = st.number_input('Edad (años)', min_value=0)
 balance = st.number_input('Balance (euros)', min_value=-5000.0, max_value=100000.0, step=100.0)
 campaign = st.number_input('Número de campañas de contacto', min_value=0)
@@ -41,11 +41,15 @@ user_data_combined['month'] = user_data['month'].values  # Añadir de nuevo la c
 user_data_kmeans = user_data_combined[['age', 'balance']]  # Cambia según las columnas utilizadas en KMeans
 
 # Predicción del clúster con K-means
-cluster_prediction = kmeans_model.predict(user_data_kmeans)[0]
+try:
+    cluster_prediction = kmeans_model.predict(user_data_kmeans)[0]
+except Exception as e:
+    st.error(f"Error en predicción del clúster: {e}")
 
 # Predicción de la probabilidad con el modelo de regresión logística
-probability_prediction = logistic_model.predict_proba(user_data_combined)[0][1]
-
-# Mostrar las predicciones
-st.write(f"El usuario pertenece al clúster: **{cluster_prediction}**")
-st.write(f"Probabilidad de adquirir un depósito: **{probability_prediction:.2f}**")
+try:
+    probability_prediction = logistic_model.predict_proba(user_data_combined)[0][1]
+    st.write(f"El usuario pertenece al clúster: **{cluster_prediction}**")
+    st.write(f"Probabilidad de adquirir un depósito: **{probability_prediction:.2f}**")
+except Exception as e:
+    st.error(f"Error en predicción de probabilidad: {e}")
