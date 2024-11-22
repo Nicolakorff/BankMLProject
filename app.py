@@ -21,7 +21,7 @@ balance = st.number_input('Sueldo (euros)', min_value=0)
 
 # Crear un DataFrame con las entradas
 user_data = pd.DataFrame({
-    'age': [age]
+    'age': [age],
     'balance ': [balance],
 })
 
