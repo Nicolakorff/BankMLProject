@@ -45,7 +45,7 @@ try:
     cluster_prediction = kmeans_model.predict(user_data_kmeans)[0]
 
     # Predicción de la probabilidad con el modelo de regresión logística
-    probability_prediction = logistic_model.predict(user_data_combined)[0][1]
+    probability_prediction = logistic_model.predict_proba(user_data_combined)[0][1]
 
     # Mostrar las predicciones
     st.write(f"El usuario pertenece al clúster: **{cluster_prediction}**")
