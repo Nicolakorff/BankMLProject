@@ -16,14 +16,14 @@ with open('scaler.pkl', 'rb') as scaler_file:
 st.title('Predicción del grupo y probabilidad de adquirir depósitos')
 
 # Entrada de datos del usuario
-month_encoded = st.selectbox('Momento del contacto de campaña (mes)', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
-age = st.number_input('Edad (años)', min_value=18, max_value=100, step=1)
+month_encoded = st.selectbox('Momento del contacto de campaña (mes)', min_value=0, max_value=12)
+age = st.number_input('Edad (años)', min_value=0)
 balance = st.number_input('Balance (euros)', min_value=-5000.0, max_value=100000.0, step=100.0)
-campaign = st.number_input('Número de campañas de contacto', min_value=1, max_value=50, step=1)
+campaign = st.number_input('Número de campañas de contacto', min_value=0)
 
 # Crear un DataFrame con las entradas
 user_data = pd.DataFrame({
-    'month': [month_encoded],  # Si no fue codificado, se deja como está
+    'month': [month_encoded],
     'age': [age],
     'balance': [balance],
     'campaign': [campaign]
@@ -45,7 +45,7 @@ try:
     cluster_prediction = kmeans_model.predict(user_data_kmeans)[0]
 
     # Predicción de la probabilidad con el modelo de regresión logística
-    probability_prediction = logistic_model.predict_proba(user_data_combined)[0][1]
+    probability_prediction = logistic_model.predict(user_data_combined)[0][1]
 
     # Mostrar las predicciones
     st.write(f"El usuario pertenece al clúster: **{cluster_prediction}**")
