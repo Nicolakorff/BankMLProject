@@ -22,9 +22,9 @@ age = st.number_input('Edad (años)', min_value=0)
 
 # Crear un DataFrame con las entradas
 user_data = pd.DataFrame({
-    'Momento del contacto de campaña': [month_encoded],
-    'Sueldo ': [balance],
-    'Edad': [age]
+    'month': [month_encoded],
+    'balance ': [balance],
+    'age': [age]
 })
 
 # Estandarizar las entradas (excepto 'month')
