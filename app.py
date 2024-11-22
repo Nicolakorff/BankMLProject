@@ -16,20 +16,27 @@ with open('scaler.pkl', 'rb') as scaler_file:
 st.title('Predicción del grupo y probabilidad de adquirir depósitos')
 
 # Entrada de datos del usuario
-age = st.number_input('Edad (años)', min_value=18, max_value=100, step=1)
+month_encoded = st.number_input('Momento del contacto de campaña (meses)', min_value=1, max_value=12, step=1)
 balance = st.number_input('Balance (euros)', min_value=-5000.0, max_value=100000.0, step=100.0)
-campaign = st.number_input('Número de campañas en las que ha sido contactado', min_value=1, max_value=50, step=1)
+age = st.number_input('Edad (años)', min_value=18, max_value=100, step=1)
+campaign = st.number_input('Número de contactos durante la campaña', min_value=1, max_value=50, step=1)
 
-# Crear un DataFrame con las entradas
+# Crear un DataFrame con las entradas, usando nombres consistentes con el modelo
 user_data = pd.DataFrame({
-    'age': [age],
+    'month': [month_encoded],  # Ajusta aquí si el nombre original era diferente
     'balance': [balance],
+    'age': [age],
     'campaign': [campaign]
 })
 
 try:
+    # Verifica si los nombres de las columnas coinciden
+    expected_columns = scaler.feature_names_in_  # Nombres utilizados durante el ajuste
+    if not all(col in user_data.columns for col in expected_columns):
+        raise ValueError(f"Las columnas esperadas son: {expected_columns}, pero las ingresadas son: {user_data.columns}")
+
     # Estandarizar las entradas
-    user_data_standardized = scaler.transform(user_data)
+    user_data_standardized = scaler.transform(user_data[expected_columns])
 
     # Predicción del clúster con K-means
     cluster_prediction = kmeans_model.predict(user_data_standardized)[0]
@@ -43,4 +50,5 @@ try:
 
 except Exception as e:
     st.error(f"Ha ocurrido un error al realizar la predicción: {e}")
+
 
