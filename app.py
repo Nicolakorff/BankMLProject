@@ -30,6 +30,12 @@ user_data = pd.DataFrame({
 })
 
 try:
+    # Seleccionar las características utilizadas para entrenar KMeans
+    user_data_kmeans = user_data_combined[['age', 'balance']]  # Ajustar según las características originales
+
+    # Predicción del clúster con K-means
+    cluster_prediction = kmeans_model.predict(user_data_kmeans)[0]
+ 
     # Estandarizar las entradas (excepto 'month')
     user_data_to_scale = user_data.drop(columns=['month'])  # Excluir 'month' de la estandarización
     user_data_standardized = scaler.transform(user_data_to_scale)
