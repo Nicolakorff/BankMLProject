@@ -2,6 +2,8 @@
 
 **TRY IT!! ->** https://projecte-machine-learning-nicola.streamlit.app/
 
+![Uploading Captura de pantalla 2025-04-21 a las 23.13.04.png…]()
+
 ## Introduction
 This is a bank that sells long-term deposits to a diverse audience.
 
