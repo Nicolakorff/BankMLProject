@@ -2,7 +2,7 @@
 
 **TRY IT!! ->** https://projecte-machine-learning-nicola.streamlit.app/
 
-![Uploading Captura de pantalla 2025-04-21 a las 23.13.04.png…]()
+![Captura de pantalla 2025-04-21 a las 23 13 04](https://github.com/user-attachments/assets/e88fadd4-c198-4c06-8be7-9668c933dff9)
 
 ## Introduction
 This is a bank that sells long-term deposits to a diverse audience.
