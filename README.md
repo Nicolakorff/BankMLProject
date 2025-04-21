@@ -1,5 +1,3 @@
-# Projecte-Machine-Learning
-
 # ML Project to Increase Deposit Sales
 
 **TRY IT!! ->** https://projecte-machine-learning-nicola.streamlit.app/
