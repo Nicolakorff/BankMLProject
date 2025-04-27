@@ -1,8 +1,6 @@
 # ML Project to Increase Deposit Sales
 
-**TRY IT!! ->** https://projecte-machine-learning-nicola.streamlit.app/
-
-![Captura de pantalla 2025-04-21 a las 23 13 04](https://github.com/user-attachments/assets/e88fadd4-c198-4c06-8be7-9668c933dff9)
+**TRY IT!! ->** [Prediction App](https://projecte-machine-learning-nicola.streamlit.app/)
 
 ## Introduction
 This is a bank that sells long-term deposits to a diverse audience.
@@ -28,6 +26,7 @@ To increase in annual sales. This metric would directly reflect the effectivenes
 ## Ethical and Social Responsibilities
 Since the system collects personal data from customers, it is essential to ensure compliance with data protection laws such as the General Data Protection Regulation (GDPR) in Europe or other similar regional regulations. **Privacy and Data Protection**: Informed data collection, anonymization and data minimization. **Algorithmic Bias and Justice**: Avoiding bias in data, monitoring bias and making transparent decisions. **Transparency and Explainability**: Explainability of the model and business transparency. **Social and Economic Impact**: Impact on personalization and inequality in access to services. **Responsibility in Automated Decision Making**: Human supervision and response to errors. **Management of technological risks**.
 
+![Captura de pantalla 2025-04-21 a las 23 13 04](https://github.com/user-attachments/assets/e88fadd4-c198-4c06-8be7-9668c933dff9)
 ![Captura de pantalla 2025-04-21 a las 23 07 32](https://github.com/user-attachments/assets/7e80c56f-ba7c-45e5-ac4c-5e843fed0ee8)
 ![Captura de pantalla 2025-04-21 a las 23 07 52](https://github.com/user-attachments/assets/b88089b2-6acb-4678-8ea2-8fd1e960a65a)
 ![Captura de pantalla 2025-04-21 a las 23 08 10](https://github.com/user-attachments/assets/7684274e-7a4d-45c7-9dc2-069cd94adb44)
