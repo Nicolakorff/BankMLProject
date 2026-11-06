@@ -208,4 +208,4 @@ The system uses customers' personal data, so it must comply with data protection
 ## Author
 
 **Nicola Korff**
-[GitHub](https://github.com/Nicolakorff) | [LinkedIn](https://www.linkedin.com/in/nicola-korff/)
+[GitHub](https://github.com/Nicolakorff) | [LinkedIn](https://www.linkedin.com/in/nicolakorff/)
