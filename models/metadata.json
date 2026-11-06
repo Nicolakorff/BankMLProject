@@ -1,0 +1,13 @@
+{
+  "sklearn_version": "1.9.1",
+  "k": 4,
+  "logistic_test_metrics": {
+    "AUC": 0.6824,
+    "Accuracy": 0.6462,
+    "Precision": 0.6309,
+    "Recall": 0.6106,
+    "F1": 0.6206,
+    "Log-loss": 0.6429
+  },
+  "logistic_cv_auc_mean": 0.6745
+}
