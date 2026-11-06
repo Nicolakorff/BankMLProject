@@ -1,64 +1,75 @@
-import streamlit as st
+import json
 import pickle
-import pandas as pd
-import numpy as np
+from pathlib import Path
 
-# Cargar los modelos, el escalador y las columnas de entrenamiento
-with open('kmeans_model.pkl', 'rb') as kmeans_file:
-    kmeans_model = pickle.load(kmeans_file)
+import streamlit as st
 
-with open('logistic_model.pkl', 'rb') as logistic_file:
-    logistic_model = pickle.load(logistic_file)
+from bank_utils import MONTH_ORDER, predict_customer
 
-with open('scaler.pkl', 'rb') as scaler_file:
-    scaler = pickle.load(scaler_file)
+MODELS = Path(__file__).parent / "models"
 
-with open('features.pkl', 'rb') as features_file:
-    expected_features = pickle.load(features_file)
 
-# Título de la aplicación
-st.title('Predicción del grupo y probabilidad de adquirir depósitos')
+@st.cache_resource
+def load_artifacts():
+    def load(name):
+        with open(MODELS / name, "rb") as f:
+            return pickle.load(f)
+    with open(MODELS / "cluster_profiles.json", encoding="utf-8") as f:
+        profiles = json.load(f)
+    return (load("preprocessor.pkl"), load("segmenter.pkl"), load("kmeans_model.pkl"),
+            load("logistic_model.pkl"), profiles)
 
-# Entrada de datos del usuario
-month_encoded = st.selectbox('Momento del contacto de campaña (mes)', options=list(range(1, 13)))
-age = st.number_input('Edad (años)', min_value=0)
-balance = st.number_input('Balance (euros)', min_value=-5000.0, max_value=100000.0, step=100.0)
-campaign = st.number_input('Número de campañas de contacto', min_value=0)
 
-# Crear un DataFrame con las entradas
-user_data = pd.DataFrame({
-    'month': [month_encoded],
-    'age': [age],
-    'balance': [balance],
-    'campaign': [campaign]
-})
+prep, segmenter, kmeans_model, logistic_model, profiles = load_artifacts()
 
-# Estandarizar las entradas (excepto 'month')
-user_data_to_scale = user_data.drop(columns=['month'])  # Excluir 'month' de la estandarización
-user_data_standardized = scaler.transform(user_data_to_scale)
+MONTHS_ES = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
+             "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+JOBS_ES = {"Administrativo/a": "admin.", "Obrero/a": "blue-collar", "Emprendedor/a": "entrepreneur",
+           "Empleado/a del hogar": "housemaid", "Dirección/gestión": "management", "Jubilado/a": "retired",
+           "Autónomo/a": "self-employed", "Servicios": "services", "Estudiante": "student",
+           "Técnico/a": "technician", "Desempleado/a": "unemployed", "Desconocido": "unknown"}
+MARITAL_ES = {"Casado/a": "married", "Soltero/a": "single", "Divorciado/a": "divorced"}
+EDUCATION_ES = {"Primaria": "primary", "Secundaria": "secondary", "Terciaria": "tertiary", "Desconocida": "unknown"}
+YES_NO = {"Sí": "yes", "No": "no"}
 
-# Combinar 'month' con los datos estandarizados
-user_data_combined = pd.DataFrame(user_data_standardized, columns=user_data_to_scale.columns)
-user_data_combined['month'] = user_data['month'].values  # Añadir de nuevo la columna 'month'
+st.title("Predicción del grupo y probabilidad de adquirir depósitos")
+st.caption("Introduce los datos del cliente. Los mismos 9 datos que usa el modelo.")
 
-# Añadir las características faltantes y reordenar
-for col in expected_features:
-    if col not in user_data_combined:
-        user_data_combined[col] = 0  # Características ausentes se llenan con 0
+col1, col2 = st.columns(2)
+with col1:
+    age = st.number_input("Edad (años)", min_value=18, max_value=100, value=40)
+    balance = st.number_input("Balance (euros)", min_value=-5000.0, max_value=100000.0, value=1000.0, step=100.0)
+    campaign = st.number_input("Número de contactos en esta campaña", min_value=1, max_value=60, value=2)
+    month = st.selectbox("Mes del contacto", MONTHS_ES, index=4)
+with col2:
+    job = st.selectbox("Profesión", list(JOBS_ES))
+    marital = st.selectbox("Estado civil", list(MARITAL_ES))
+    education = st.selectbox("Nivel de estudios", list(EDUCATION_ES), index=1)
+    housing = st.radio("¿Tiene hipoteca?", list(YES_NO), index=1, horizontal=True)
+    loan = st.radio("¿Tiene préstamo personal?", list(YES_NO), index=1, horizontal=True)
 
-user_data_combined = user_data_combined[expected_features]  # Reordenar las columnas
+customer = {
+    "age": age, "job": JOBS_ES[job], "marital": MARITAL_ES[marital],
+    "education": EDUCATION_ES[education], "balance": balance,
+    "housing": YES_NO[housing], "loan": YES_NO[loan],
+    "month": MONTH_ORDER[MONTHS_ES.index(month)], "campaign": campaign,
+}
 
-# Predicción del clúster con K-means
-user_data_kmeans = user_data_combined[['age', 'balance']]  # Cambia según las columnas utilizadas en KMeans
 try:
-    cluster_prediction = kmeans_model.predict(user_data_kmeans)[0]
-except Exception as e:
-    st.error(f"Error en predicción del clúster: {e}")
-
-# Predicción de la probabilidad con el modelo de regresión logística
-try:
-    probability_prediction = logistic_model.predict_proba(user_data_combined)[0][1]
-    st.write(f"El usuario pertenece al clúster: **{cluster_prediction}**")
-    st.write(f"Probabilidad de adquirir un depósito: **{probability_prediction:.2f}**")
-except Exception as e:
-    st.error(f"Error en predicción de probabilidad: {e}")
+    cluster, probability = predict_customer(customer, prep, segmenter, kmeans_model, logistic_model)
+    st.subheader("Resultado")
+    st.metric("Probabilidad de adquirir un depósito", f"{probability:.0%}")
+    st.write(f"El cliente pertenece al clúster: **{cluster}**")
+    p = profiles[str(cluster)]
+    st.markdown(
+        f"**Perfil del clúster {cluster}** ({int(p['n_clients']):,} clientes de entrenamiento)\n"
+        f"- Edad media: {p['edat_mitjana']:.0f} años · saldo medio: {p['saldo_mitja_€']:,.0f} €\n"
+        f"- Casados: {p['% casats']:.0f}% · solteros: {p['% solters']:.0f}% · divorciados: {p['% divorciats']:.0f}%\n"
+        f"- Con hipoteca: {p['% hipoteca']:.0f}% · con préstamo personal: {p['% préstec']:.0f}%\n"
+        f"- Conversión histórica del clúster (test): {p['conversió test %']:.0f}%"
+    )
+    st.caption("Los clústers se definen sobre todo por el estado civil y el préstamo personal. "
+               "La probabilidad es orientativa (AUC del modelo ≈ 0,68): sirve para priorizar contactos, "
+               "no para decidir de forma automática.")
+except Exception as e:  # noqa: BLE001
+    st.error(f"No se ha podido calcular la predicción: {e}")
